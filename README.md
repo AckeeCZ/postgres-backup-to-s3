@@ -1,4 +1,4 @@
-# Backup container for postgres instances
+# Backup container for PostgreSQL instances
 
 This image provides a cron daemon that runs daily backups from postgres (clustered or single instance) to Amazon S3.
 
