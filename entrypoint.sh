@@ -20,7 +20,7 @@ s3cmd ls "s3://$S3_URL" > /dev/null
 
 DB_URI="postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT"
 # add a cron job
-echo "$CRON_SCHEDULE root rm -rf /tmp/dump* && pg_dumpall --dbname=$DB_URI --single-transaction --file=/tmp/dump.sql --verbose >> /var/log/cron.log 2>&1 && gzip -c /tmp/dump.sql > /tmp/dump && s3cmd sync /tmp/dump s3://$S3_URL/ >> /var/log/cron.log 2>&1 && rm -rf /tmp/dump*" >> /etc/crontab
+echo "$CRON_SCHEDULE root rm -rf /tmp/dump* && pg_dumpall --dbname=$DB_URI --file=/tmp/dump.sql --verbose >> /var/log/cron.log 2>&1 && gzip -c /tmp/dump.sql > /tmp/dump && s3cmd sync /tmp/dump s3://$S3_URL/ >> /var/log/cron.log 2>&1 && rm -rf /tmp/dump*" >> /etc/crontab
 crontab /etc/crontab
 
 exec "$@"
