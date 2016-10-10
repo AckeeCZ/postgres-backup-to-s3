@@ -18,7 +18,12 @@ s3cmd ls "s3://$S3_URL" > /dev/null
 [[ -z "$CRON_SCHEDULE" ]] && CRON_SCHEDULE='0 2 * * *' && \
    echo "CRON_SCHEDULE set to default ('$CRON_SCHEDULE')"
 
-DB_URI="postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT"
+# format hostname:port:database:username:password 
+# for more information see https://www.postgresql.org/docs/9.1/static/libpq-pgpass.html
+echo "*:*:*:*:$POSTGRES_PASSWORD" > ~/.pgpass
+chmod 0600 ~/.pgpass
+
+DB_URI="postgresql://$POSTGRES_USER@$POSTGRES_HOST:$POSTGRES_PORT"
 # add a cron job
 echo "$CRON_SCHEDULE root rm -rf /tmp/dump* && pg_dumpall --dbname=$DB_URI --file=/tmp/dump.sql --verbose >> /var/log/cron.log 2>&1 && gzip -c /tmp/dump.sql > /tmp/dump && s3cmd sync /tmp/dump s3://$S3_URL/ >> /var/log/cron.log 2>&1 && rm -rf /tmp/dump*" >> /etc/crontab
 crontab /etc/crontab
